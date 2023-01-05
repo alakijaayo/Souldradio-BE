@@ -7,13 +7,18 @@ import org.apache.hc.core5.http.ParseException;
 
 import org.springframework.stereotype.Component;
 
+import com.neovisionaries.i18n.CountryCode;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.User;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
+import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
 
 @Component
 public class SpotifyClient {
@@ -22,6 +27,7 @@ public class SpotifyClient {
   Dotenv dotenv = Dotenv.configure().load();
   String clientID = dotenv.get("CLIENT_ID");
   String secretID = dotenv.get("SECRET_ID");
+  Paging<Track> trackPaging;
 
   private URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8080/callback");
   
@@ -40,7 +46,7 @@ public class SpotifyClient {
     return authorizationCodeUriRequest.execute().toString();
   }
 
-  public String setAuthorizationCode (String code) {
+  public void setAuthorizationCode (String code) {
     try {
       AuthorizationCodeCredentials credentials = spotifyAPI.authorizationCode(code).build().execute();
       accessToken = credentials.getAccessToken();
@@ -52,11 +58,29 @@ public class SpotifyClient {
     } catch (IOException | SpotifyWebApiException | ParseException e) {
       System.out.println("Error: " + e.getMessage());
     }
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public Paging<Track> searchTrack(String track) {
     
-    String encode = "userLoggedIn=true";
-    // + user.getDisplayName() + "+" + user.getImages()[0].getUrl() + "+" + accessToken;
-    // String encodedString = Base64.getEncoder().encodeToString(encode.getBytes()); 
-    String host = "http://localhost:3000/?" + encode;
-    return host;
+    final SearchTracksRequest searchTracksRequest = spotifyAPI.searchTracks(track)
+    .market(CountryCode.GB)
+    .limit(10)
+    .includeExternal("audio")
+    .build();
+
+    try {
+      trackPaging = searchTracksRequest.execute();
+
+      System.out.println(trackPaging.getItems()[0].getArtists()[0].getName());
+      
+    } catch (IOException | SpotifyWebApiException | ParseException e) {
+      System.out.println("Error: " + e.getMessage());
+    }
+
+    return trackPaging;
   }
 }
