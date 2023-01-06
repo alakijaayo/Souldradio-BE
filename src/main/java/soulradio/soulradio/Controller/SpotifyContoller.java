@@ -39,4 +39,9 @@ public class SpotifyContoller {
   public Paging<Track> getTracks(@RequestParam String track) {
     return spotifyClient.searchTrack(track);
   }
+
+  @GetMapping("/play")
+  public void playTrack(@RequestParam String trackid) {
+    spotifyClient.playTrack(trackid);
+  }
 }
