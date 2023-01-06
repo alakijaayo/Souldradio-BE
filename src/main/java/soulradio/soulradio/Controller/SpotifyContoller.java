@@ -10,14 +10,21 @@ import org.springframework.web.servlet.view.RedirectView;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.User;
+import soulradio.soulradio.Classes.SpotifyUser.SpotifyUser;
+import soulradio.soulradio.Client.PlayTrackClient;
 import soulradio.soulradio.Client.SpotifyClient;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class SpotifyContoller {
-
+  SpotifyUser spotifyUser = new SpotifyUser();
+  
   @Autowired
   SpotifyClient spotifyClient;
+  
+  @Autowired
+  PlayTrackClient playTrackClient;
+
   
   @GetMapping("/login")
   public RedirectView login() {
@@ -26,22 +33,24 @@ public class SpotifyContoller {
 
   @GetMapping("/callback")
   public RedirectView getCode(@RequestParam String code) {
-    spotifyClient.setAuthorizationCode(code);
+    spotifyClient.setAuthorizationCode(code, spotifyUser);
     return new RedirectView( "http://localhost:3000/?userLoggedIn=true");
   }
 
   @GetMapping("/username")
   public User getUser() {
-    return spotifyClient.getUser();
+    System.out.println(spotifyUser.getAccessToken());
+    playTrackClient.getUserDevice(spotifyUser);
+    return spotifyUser.getUser();
   }
 
   @GetMapping("/searchtrack")
   public Paging<Track> getTracks(@RequestParam String track) {
-    return spotifyClient.searchTrack(track);
+    return playTrackClient.searchTrack(spotifyUser.getAccessToken(), track);
   }
 
   @GetMapping("/play")
   public void playTrack(@RequestParam String trackid) {
-    spotifyClient.playTrack(trackid);
+    playTrackClient.play(spotifyUser.getAccessToken(), trackid, spotifyUser.getDevice());
   }
 }
