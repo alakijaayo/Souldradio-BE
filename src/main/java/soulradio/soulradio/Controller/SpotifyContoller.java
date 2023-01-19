@@ -1,5 +1,7 @@
 package soulradio.soulradio.Controller;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,14 +36,20 @@ public class SpotifyContoller {
   @GetMapping("/callback")
   public RedirectView getCode(@RequestParam String code) {
     spotifyClient.setAuthorizationCode(code, spotifyUser);
-    return new RedirectView( "http://localhost:3000/?userLoggedIn=true");
+    return new RedirectView( "http://localhost:3000/home");
   }
 
   @GetMapping("/username")
   public User getUser() {
-    System.out.println(spotifyUser.getAccessToken());
     playTrackClient.getUserDevice(spotifyUser);
     return spotifyUser.getUser();
+  }
+
+  @GetMapping("/token")
+  public HashMap<String, String> getAccessToken() {
+    HashMap<String, String> token = new HashMap<String, String>();
+    token.put("token", spotifyUser.getAccessToken()); 
+    return token;
   }
 
   @GetMapping("/searchtrack")

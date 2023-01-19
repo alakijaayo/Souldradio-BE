@@ -35,7 +35,7 @@ public class SpotifyClient {
     .build();
   
   private AuthorizationCodeUriRequest authorizationCodeUriRequest = spotifyAPI.authorizationCodeUri()
-    .scope("user-read-private user-read-email user-read-playback-state streaming")
+    .scope("user-read-private user-read-email user-read-playback-state user-modify-playback-state streaming")
     .show_dialog(true)
     .build();
 
