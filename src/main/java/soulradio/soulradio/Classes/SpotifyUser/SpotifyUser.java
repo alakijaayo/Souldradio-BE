@@ -7,7 +7,6 @@ public class SpotifyUser {
   private String accessToken;
   private String refreshToken;
   private User newUser;
-  private String device;
 
   public void setAccessToken(String accessToken) {
     this.accessToken = accessToken;
@@ -21,10 +20,6 @@ public class SpotifyUser {
     this.newUser = user;
   }
 
-  public void setDevice(String device) {
-    this.device = device;
-  }
-
   public String getAccessToken() {
     return accessToken;
   }
@@ -35,9 +30,5 @@ public class SpotifyUser {
 
   public User getUser() {
     return newUser;
-  }
-
-  public String getDevice() {
-    return device;
   }
 }

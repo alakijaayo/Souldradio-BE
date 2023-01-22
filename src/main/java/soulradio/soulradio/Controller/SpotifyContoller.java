@@ -2,9 +2,14 @@ package soulradio.soulradio.Controller;
 
 import java.util.HashMap;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -20,6 +25,7 @@ import soulradio.soulradio.Client.SpotifyClient;
 @RestController
 public class SpotifyContoller {
   SpotifyUser spotifyUser = new SpotifyUser();
+  JSONParser getTrack = new JSONParser();
   
   @Autowired
   SpotifyClient spotifyClient;
@@ -41,7 +47,6 @@ public class SpotifyContoller {
 
   @GetMapping("/username")
   public User getUser() {
-    playTrackClient.getUserDevice(spotifyUser);
     return spotifyUser.getUser();
   }
 
@@ -57,8 +62,13 @@ public class SpotifyContoller {
     return playTrackClient.searchTrack(spotifyUser.getAccessToken(), track);
   }
 
-  @GetMapping("/play")
-  public void playTrack(@RequestParam String trackid) {
-    playTrackClient.play(spotifyUser.getAccessToken(), trackid, spotifyUser.getDevice());
+  @PutMapping("/play")
+  public void playTrack(@RequestParam String device_id, @RequestBody String Trackuri) throws ParseException {
+    JSONObject jsonObject = (JSONObject) getTrack.parse(Trackuri);
+    Object Trackid = jsonObject.get("uri");
+    String trackString = String.valueOf(Trackid);
+      
+
+    playTrackClient.play(spotifyUser.getAccessToken(), trackString, device_id);
   }
 }
