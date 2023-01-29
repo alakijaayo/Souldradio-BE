@@ -1,9 +1,9 @@
 package soulradio.soulradio.Controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,7 +25,6 @@ import soulradio.soulradio.Client.SpotifyClient;
 @RestController
 public class SpotifyContoller {
   SpotifyUser spotifyUser = new SpotifyUser();
-  JSONParser getTrack = new JSONParser();
   
   @Autowired
   SpotifyClient spotifyClient;
@@ -63,12 +62,7 @@ public class SpotifyContoller {
   }
 
   @PutMapping("/play")
-  public void playTrack(@RequestParam String device_id, @RequestBody String Trackuri) throws ParseException {
-    JSONObject jsonObject = (JSONObject) getTrack.parse(Trackuri);
-    Object Trackid = jsonObject.get("uri");
-    String trackString = String.valueOf(Trackid);
-      
-
-    playTrackClient.play(spotifyUser.getAccessToken(), trackString, device_id);
+  public ArrayList<JSONObject> playTrack(@RequestParam String device_id, @RequestBody String Track) throws ParseException {
+    return playTrackClient.play(spotifyUser.getAccessToken(), Track, device_id);
   }
 }
