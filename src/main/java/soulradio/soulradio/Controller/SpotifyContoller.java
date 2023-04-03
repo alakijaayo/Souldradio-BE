@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,8 +60,13 @@ public class SpotifyContoller {
     return playTrackClient.searchTrack(spotifyUser.getAccessToken(), track);
   }
 
+  @PutMapping("/queuetrack")
+  public ArrayList<JSONObject> queueTrack(@RequestParam String device_id, @RequestBody String Track){
+    return playTrackClient.queueTrack(spotifyUser.getAccessToken(), Track, device_id);
+  }
+
   @PutMapping("/play")
-  public ArrayList<JSONObject> playTrack(@RequestParam String device_id, @RequestBody String Track) throws ParseException {
-    return playTrackClient.play(spotifyUser.getAccessToken(), Track, device_id);
+  public void playNextTrack(@RequestParam String device_id, @RequestBody String Track) {
+    playTrackClient.playNextTrack(device_id);
   }
 }

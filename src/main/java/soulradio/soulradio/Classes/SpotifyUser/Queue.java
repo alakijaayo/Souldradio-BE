@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.apache.hc.core5.http.ParseException;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
@@ -16,6 +17,8 @@ public class Queue {
   
   private String accessToken;
   public ArrayList<JSONObject> queuedTracks = new ArrayList<JSONObject>();
+  JSONParser getTrack = new JSONParser();
+  JSONObject trackDetails;
 
   public void setAccessToken(String accessToken) {
     this.accessToken = accessToken;
@@ -47,6 +50,16 @@ public class Queue {
   public ArrayList<JSONObject> getQueuedTracks() {
     return queuedTracks;
   }
+
+  public JSONObject getTrack(String track) {
+    try {
+      trackDetails = (JSONObject) getTrack.parse(track);
+    } catch (org.json.simple.parser.ParseException e) {
+      e.printStackTrace();
+    }
+
+    return trackDetails;
+  } 
 
   public void playTrack(String deviceID, String track) {
     final SpotifyApi spotifyApi = new SpotifyApi.Builder()
