@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.User;
+import soulradio.soulradio.Classes.SpotifyUser.Queue;
 import soulradio.soulradio.Classes.SpotifyUser.SpotifyUser;
 import soulradio.soulradio.Client.PlayTrackClient;
 import soulradio.soulradio.Client.SpotifyClient;
@@ -31,6 +32,8 @@ public class SpotifyContoller {
   @Autowired
   PlayTrackClient playTrackClient;
 
+  @Autowired
+  Queue queue;
   
   @GetMapping("/login")
   public RedirectView login() {
@@ -62,11 +65,13 @@ public class SpotifyContoller {
 
   @PutMapping("/queuetrack")
   public ArrayList<JSONObject> queueTrack(@RequestParam String device_id, @RequestBody String Track){
-    return playTrackClient.queueTrack(spotifyUser.getAccessToken(), Track, device_id);
+    spotifyUser.setDeviceID(device_id);
+    return playTrackClient.queueTrack(spotifyUser.getAccessToken(), Track, device_id, queue);
   }
 
   @PutMapping("/play")
-  public void playNextTrack(@RequestParam String device_id, @RequestBody String Track) {
-    playTrackClient.playNextTrack(device_id);
+  public ArrayList<JSONObject> playNextTrack() {
+    String trackString = queue.getNextTrack();
+    return playTrackClient.play(spotifyUser.getAccessToken(), trackString, spotifyUser.getDeviceId(), queue);
   }
 }

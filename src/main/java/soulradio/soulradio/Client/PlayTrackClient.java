@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.apache.hc.core5.http.ParseException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import com.google.gson.JsonParser;
 import org.springframework.stereotype.Component;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -16,19 +17,18 @@ import se.michaelthelin.spotify.model_objects.miscellaneous.CurrentlyPlaying;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.player.GetUsersCurrentlyPlayingTrackRequest;
+import se.michaelthelin.spotify.requests.data.player.StartResumeUsersPlaybackRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
 import soulradio.soulradio.Classes.SpotifyUser.Queue;
 
 @Component
 public class PlayTrackClient {
   Paging<Track> trackList;
-  Queue queuedTracks = new Queue();
   ArrayList<JSONObject> testArrayList = new ArrayList<>();
   JSONParser getTrack = new JSONParser();
 
   
   public Paging<Track> searchTrack(String accessToken, String track) {
-    queuedTracks.setAccessToken(accessToken);
     final SpotifyApi spotifyApi = new SpotifyApi.Builder()
       .setAccessToken(accessToken)
       .build();
@@ -51,12 +51,12 @@ public class PlayTrackClient {
       return trackList;
   }
 
-  public ArrayList<JSONObject> queueTrack(String accessToken, String Track, String deviceID) {
+  public ArrayList<JSONObject> queueTrack(String accessToken, String Track, String deviceID, Queue queue) {
     final SpotifyApi spotifyApi = new SpotifyApi.Builder()
       .setAccessToken(accessToken)
       .build();
 
-      JSONObject trackDetails =  queuedTracks.getTrack(Track);
+      JSONObject trackDetails =  queue.getTrackDetails(Track);
       Object Trackid = trackDetails.get("uri");
       String trackString = String.valueOf(Trackid);
 
@@ -68,20 +68,48 @@ public class PlayTrackClient {
     
       try {
         CurrentlyPlaying track = getUsersCurrentlyPlayingTrackRequest.execute();
-        if (track == null || (track.getIs_playing() == false && queuedTracks.getSize() == 0)) {
-          queuedTracks.clearQueue();
-          queuedTracks.playTrack(deviceID, trackString);
+        if (track == null || (track.getIs_playing() == false && queue.getSize() == 0)) {
+          queue.clearQueue();
+          play(accessToken, trackString, deviceID, queue);
         } else {
-          queuedTracks.addToQueue(trackDetails);
+          queue.addToQueue(trackDetails);
         }
       } catch (IOException | SpotifyWebApiException | ParseException e) {
         System.out.println("Error: " + e.getMessage());
       }
 
-      return queuedTracks.getQueuedTracks();
+      return queue.getQueuedTracks();
   };
 
-  public void playNextTrack(String deviceID) {
-    queuedTracks.playTrack(deviceID, queuedTracks.getNextTrack());
-  } 
+    public ArrayList<JSONObject> play(String accessToken, String track, String deviceID, Queue queue) {
+      final SpotifyApi spotifyApi = new SpotifyApi.Builder()
+      .setAccessToken(accessToken)
+      .build();
+
+      final GetUsersCurrentlyPlayingTrackRequest getUsersCurrentlyPlayingTrackRequest = spotifyApi
+      .getUsersCurrentlyPlayingTrack()
+      .market(CountryCode.GB)
+      .additionalTypes("track")
+      .build();
+
+      final StartResumeUsersPlaybackRequest startResumeUsersPlaybackRequest = spotifyApi
+      .startResumeUsersPlayback()
+      .device_id(deviceID)
+      .uris(JsonParser.parseString(track).getAsJsonArray())
+      .build();
+
+      try {
+
+        if (queue.getSize() != 0) {
+          queue.removeTrack();
+        }
+        
+        getUsersCurrentlyPlayingTrackRequest.execute();
+        startResumeUsersPlaybackRequest.execute();
+      } catch (IOException | SpotifyWebApiException | ParseException e) {
+        System.out.println("Error: " + e.getMessage());
+      }
+
+      return queue.getQueuedTracks();
+    }
 }
