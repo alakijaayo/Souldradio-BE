@@ -80,8 +80,6 @@ public class SpotifyContoller {
     int number = Integer.parseInt(queue.getStringValue(Track, "trackNumber"));
     String vote = queue.getStringValue(Track, "vote");
     String key = vote.equals("up") ? "votesUp" : "votesDown";
-    System.out.println(number); 
-    System.out.println(vote);
 
     return queue.updateQueuedTracks(number, vote, key);
   }

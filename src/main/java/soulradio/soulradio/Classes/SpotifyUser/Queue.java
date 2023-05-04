@@ -49,7 +49,6 @@ public class Queue {
     } else {
       queuedTracks.get(number).replace("votesDown", updatedCount);
     }
-    System.out.println(queuedTracks);
     return queuedTracks;
   }
 
