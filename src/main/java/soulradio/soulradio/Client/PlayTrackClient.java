@@ -24,7 +24,6 @@ import soulradio.soulradio.Classes.SpotifyUser.Queue;
 @Component
 public class PlayTrackClient {
   Paging<Track> trackList;
-  ArrayList<JSONObject> testArrayList = new ArrayList<>();
   JSONParser getTrack = new JSONParser();
 
   
@@ -41,8 +40,6 @@ public class PlayTrackClient {
 
       try {
         trackList = searchTracksRequest.execute();
-  
-        System.out.println(trackList.getItems()[0].getArtists()[0].getName());
         
       } catch (IOException | SpotifyWebApiException | ParseException e) {
         System.out.println("Error: " + e.getMessage());
@@ -57,8 +54,7 @@ public class PlayTrackClient {
       .build();
 
       JSONObject trackDetails =  queue.getTrackDetails(Track);
-      Object Trackid = trackDetails.get("uri");
-      String trackString = String.valueOf(Trackid);
+      String trackString = queue.getStringValue(Track, "uri");
 
       final GetUsersCurrentlyPlayingTrackRequest getUsersCurrentlyPlayingTrackRequest = spotifyApi
       .getUsersCurrentlyPlayingTrack()
@@ -98,18 +94,17 @@ public class PlayTrackClient {
       .uris(JsonParser.parseString(track).getAsJsonArray())
       .build();
 
-      try {
+      if (queue.getSize() != 0) {
+        queue.removeTrack();
+      }
 
-        if (queue.getSize() != 0) {
-          queue.removeTrack();
-        }
-        
+      try {  
         getUsersCurrentlyPlayingTrackRequest.execute();
         startResumeUsersPlaybackRequest.execute();
       } catch (IOException | SpotifyWebApiException | ParseException e) {
         System.out.println("Error: " + e.getMessage());
       }
 
-      return queue.getQueuedTracks();
+      return  queue.getQueuedTracks();
     }
 }

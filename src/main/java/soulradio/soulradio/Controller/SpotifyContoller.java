@@ -74,4 +74,15 @@ public class SpotifyContoller {
     String trackString = queue.getNextTrack();
     return playTrackClient.play(spotifyUser.getAccessToken(), trackString, spotifyUser.getDeviceId(), queue);
   }
+
+  @PutMapping("/votes")
+  public ArrayList<JSONObject> updateQueue(@RequestBody String Track) {
+    int number = Integer.parseInt(queue.getStringValue(Track, "trackNumber"));
+    String vote = queue.getStringValue(Track, "vote");
+    String key = vote.equals("up") ? "votesUp" : "votesDown";
+    System.out.println(number); 
+    System.out.println(vote);
+
+    return queue.updateQueuedTracks(number, vote, key);
+  }
 }

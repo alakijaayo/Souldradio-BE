@@ -33,6 +33,26 @@ public class Queue {
     return queuedTracks;
   }
 
+  public String getStringValue(String Track, String key) {
+    JSONObject track =  getTrackDetails(Track);
+    Object trackDetails = track.get(key);
+
+    return String.valueOf(trackDetails);
+  }
+
+  public ArrayList<JSONObject> updateQueuedTracks(int number, String vote, String key) {
+    int count = Integer.parseInt(queuedTracks.get(number).get(key).toString());
+    int updatedCount = count + 1;
+
+    if (vote.equals("up")) {
+      queuedTracks.get(number).replace("votesUp", updatedCount);
+    } else {
+      queuedTracks.get(number).replace("votesDown", updatedCount);
+    }
+    System.out.println(queuedTracks);
+    return queuedTracks;
+  }
+
   public JSONObject getTrack() {
     return queuedTracks.get(0);  
   }
