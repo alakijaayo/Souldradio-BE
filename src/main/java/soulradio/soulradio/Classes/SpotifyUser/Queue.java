@@ -69,11 +69,13 @@ public class Queue {
 
     if (vote.equals("up")) {
       queuedTracks.get(number).replace("votesUp", updatedCount);
+      sortQueuedTracks(queuedTracks, "votesUp", true);
     } else {
       queuedTracks.get(number).replace("votesDown", updatedCount);
+      sortQueuedTracks(queuedTracks, "votesDown", false);
     }
     
-    return sortQueuedTracks(queuedTracks, "votesUp", true);
+    return queuedTracks;
   }
 
   public JSONObject getTrack() {
