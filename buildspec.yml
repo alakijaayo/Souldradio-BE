@@ -15,5 +15,4 @@ artifacts:
     - target/*.jar
     - scripts/*.sh
     - appspec.yml
-    - src/main/resources/data/*.json
   discard-paths: yes
