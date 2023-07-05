@@ -68,10 +68,10 @@ public class Queue {
     Integer updatedCount = count + 1;
 
     if (vote.equals("up")) {
-      queuedTracks.get(number).replace("votesUp", updatedCount);
+      queuedTracks.get(number).replace(key, updatedCount);
       sortQueuedTracks(queuedTracks, "votesUp", true);
     } else {
-      queuedTracks.get(number).replace("votesDown", updatedCount);
+      queuedTracks.get(number).replace(key, updatedCount);
       sortQueuedTracks(queuedTracks, "votesDown", false);
     }
     
