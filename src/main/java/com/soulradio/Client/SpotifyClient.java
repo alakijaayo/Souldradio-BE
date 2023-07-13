@@ -1,4 +1,4 @@
-package soulradio.soulradio.Client;
+package com.soulradio.Client;
 
 import java.io.IOException;
 import java.net.URI;
@@ -8,6 +8,8 @@ import org.apache.hc.core5.http.ParseException;
 
 import org.springframework.stereotype.Component;
 
+import com.soulradio.Classes.SpotifyUser.SpotifyUser;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
@@ -16,7 +18,6 @@ import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCrede
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
-import soulradio.soulradio.Classes.SpotifyUser.SpotifyUser;
 
 @Component
 public class SpotifyClient {

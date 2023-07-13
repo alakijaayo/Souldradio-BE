@@ -1,4 +1,4 @@
-package soulradio.soulradio.Classes.SpotifyUser;
+package com.soulradio.Classes.SpotifyUser;
 
 import se.michaelthelin.spotify.model_objects.specification.User;
 

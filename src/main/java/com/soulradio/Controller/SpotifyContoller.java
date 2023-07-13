@@ -1,10 +1,11 @@
-package soulradio.soulradio.Controller;
+package com.soulradio.Controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,13 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.soulradio.Classes.SpotifyUser.Queue;
+import com.soulradio.Classes.SpotifyUser.SpotifyUser;
+import com.soulradio.Client.PlayTrackClient;
+import com.soulradio.Client.SpotifyClient;
+
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.User;
-import soulradio.soulradio.Classes.SpotifyUser.Queue;
-import soulradio.soulradio.Classes.SpotifyUser.SpotifyUser;
-import soulradio.soulradio.Client.PlayTrackClient;
-import soulradio.soulradio.Client.SpotifyClient;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController

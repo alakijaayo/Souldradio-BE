@@ -1,4 +1,4 @@
-package soulradio.soulradio.Client;
+package com.soulradio.Client;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import com.google.gson.JsonParser;
 import org.springframework.stereotype.Component;
 
 import com.neovisionaries.i18n.CountryCode;
+import com.soulradio.Classes.SpotifyUser.Queue;
 
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
@@ -19,7 +20,6 @@ import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.player.GetUsersCurrentlyPlayingTrackRequest;
 import se.michaelthelin.spotify.requests.data.player.StartResumeUsersPlaybackRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
-import soulradio.soulradio.Classes.SpotifyUser.Queue;
 
 @Component
 public class PlayTrackClient {
