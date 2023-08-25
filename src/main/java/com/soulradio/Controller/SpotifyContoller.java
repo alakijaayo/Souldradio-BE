@@ -5,7 +5,10 @@ import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.soulradio.Classes.MessageBean;
 import com.soulradio.Classes.SpotifyUser.Queue;
 import com.soulradio.Classes.SpotifyUser.SpotifyUser;
 import com.soulradio.Client.PlayTrackClient;
@@ -33,6 +37,9 @@ public class SpotifyContoller {
   
   @Autowired
   PlayTrackClient playTrackClient;
+
+  @Autowired
+  SimpMessagingTemplate template;
 
   @Autowired
   Queue queue;
@@ -85,4 +92,10 @@ public class SpotifyContoller {
 
     return queue.updateQueuedTracks(number, vote, key);
   }
+
+  @MessageMapping("/topic-message")
+    @SendTo("/topic/user")
+    public MessageBean send(@Payload MessageBean message) {
+      return message;
+    }
 }
