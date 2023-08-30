@@ -12,7 +12,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws-message").setAllowedOriginPatterns("*").withSockJS(); // Configures SockJS endpoint, allowing fallback options for browsers that do not support WebSocket natively.
+    registry.addEndpoint("/soulradio").setAllowedOriginPatterns("*").withSockJS(); // Configures SockJS endpoint, allowing fallback options for browsers that do not support WebSocket natively.
   }
 
   @Override

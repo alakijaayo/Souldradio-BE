@@ -93,8 +93,8 @@ public class SpotifyContoller {
     return queue.updateQueuedTracks(number, vote, key);
   }
 
-  @MessageMapping("/topic-message")
-    @SendTo("/topic/user")
+  @MessageMapping("/sendmessage")
+    @SendTo("/topic/messages")
     public MessageBean send(@Payload MessageBean message) {
       return message;
     }
