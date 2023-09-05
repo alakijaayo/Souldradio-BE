@@ -89,18 +89,20 @@ public class SpotifyContoller {
     return queue.getTrack();
   }
 
-  @PutMapping("/votes")
-  public ArrayList<JSONObject> updateQueue(@RequestBody String Track) {
-    int number = Integer.parseInt(queue.getStringValue(Track, "trackNumber"));
-    String vote = queue.getStringValue(Track, "vote");
-    String key = vote.equals("up") ? "votesUp" : "votesDown";
-
-    return queue.updateQueuedTracks(number, vote, key);
-  }
-
   @MessageMapping("/sendmessage")
     @SendTo("/topic/messages")
     public MessageBean send(@Payload MessageBean message) {
       return message;
+    }
+  
+  @MessageMapping("/votes")
+    @SendTo("/topic/votes")
+    public ArrayList<JSONObject> updateQueue(@Payload String Track) {
+      int number = Integer.parseInt(queue.getStringValue(Track, "trackNumber"));
+      String vote = queue.getStringValue(Track, "vote");
+      String key = vote.equals("up") ? "votesUp" : "votesDown";
+
+      return queue.updateQueuedTracks(number, vote, key);
+
     }
 }
