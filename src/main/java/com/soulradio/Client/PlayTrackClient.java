@@ -53,8 +53,6 @@ public class PlayTrackClient {
       .setAccessToken(accessToken)
       .build();
 
-      System.out.println(Track);
-
       JSONObject trackDetails =  queue.getTrackDetails(Track);
       String trackString = queue.getStringValue(Track, "uri");
 

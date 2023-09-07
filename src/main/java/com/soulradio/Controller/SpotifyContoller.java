@@ -98,16 +98,21 @@ public class SpotifyContoller {
   @MessageMapping("/getnexttrack")
     @SendTo("/topic/nexttrack")
     public JSONObject getNextTrack() {
-      // if (queue.getTrack().isEmpty()) {
-      //   System.out.println()
-      // } 
-      return queue.getTrack();
+      JSONObject noTrack = new JSONObject();
+      noTrack.put("message", "No tracks in queue");
+
+      return queue.getSize() == 0 ? noTrack : queue.getTrack();
     }
 
   @MessageMapping("/play")
     @SendTo("/topic/play")
     public ArrayList<JSONObject> playNextTrack() {
-    String trackString = queue.getNextTrack();
-    return playTrackClient.play(spotifyUser.getAccessToken(), trackString, spotifyUser.getDeviceId(), queue);
-  }
+      String trackString = new String();
+
+      if(queue.getSize() != 0) {
+        trackString = queue.getNextTrack();
+      }
+
+      return queue.getSize() == 0 ? queue.getQueuedTracks() : playTrackClient.play(spotifyUser.getAccessToken(), trackString, spotifyUser.getDeviceId(), queue);
+    }
 }
