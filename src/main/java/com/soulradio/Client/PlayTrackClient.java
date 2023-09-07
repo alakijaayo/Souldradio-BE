@@ -53,6 +53,8 @@ public class PlayTrackClient {
       .setAccessToken(accessToken)
       .build();
 
+      System.out.println(Track);
+
       JSONObject trackDetails =  queue.getTrackDetails(Track);
       String trackString = queue.getStringValue(Track, "uri");
 
@@ -73,6 +75,8 @@ public class PlayTrackClient {
       } catch (IOException | SpotifyWebApiException | ParseException e) {
         System.out.println("Error: " + e.getMessage());
       }
+
+      System.out.println(queue.getSize());
 
       return queue.getQueuedTracks();
   };

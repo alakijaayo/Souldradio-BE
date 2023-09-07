@@ -12,7 +12,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -72,11 +71,12 @@ public class SpotifyContoller {
     return playTrackClient.searchTrack(spotifyUser.getAccessToken(), track);
   }
 
-  @PutMapping("/queuetrack")
-  public ArrayList<JSONObject> queueTrack(@RequestParam String device_id, @RequestBody String Track){
-    spotifyUser.setDeviceID(device_id);
-    return playTrackClient.queueTrack(spotifyUser.getAccessToken(), Track, device_id, queue);
-  }
+  // @PutMapping("/queuetrack")
+  // public ArrayList<JSONObject> queueTrack(@RequestParam String device_id, @RequestBody String Track){
+  //   spotifyUser.setDeviceID(device_id);
+  //   System.out.println(Track);
+  //   return playTrackClient.queueTrack(spotifyUser.getAccessToken(), Track, device_id, queue);
+  // }
 
   @PutMapping("/play")
   public ArrayList<JSONObject> playNextTrack() {
@@ -95,6 +95,15 @@ public class SpotifyContoller {
       return message;
     }
   
+  @MessageMapping("/queuetrack")
+    @SendTo("/topic/queue")
+    public ArrayList<JSONObject> queueTracks(@Payload String Track){
+      String device = queue.getStringValue(Track, "device");
+      spotifyUser.setDeviceID(device);
+      String track = queue.getStringValue(Track, "track");
+      return playTrackClient.queueTrack(spotifyUser.getAccessToken(), track, device, queue);
+    }
+  
   @MessageMapping("/votes")
     @SendTo("/topic/votes")
     public ArrayList<JSONObject> updateQueue(@Payload String Track) {
@@ -103,6 +112,5 @@ public class SpotifyContoller {
       String key = vote.equals("up") ? "votesUp" : "votesDown";
 
       return queue.updateQueuedTracks(number, vote, key);
-
     }
 }
