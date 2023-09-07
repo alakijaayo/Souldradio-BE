@@ -11,7 +11,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -71,12 +70,6 @@ public class SpotifyContoller {
     return playTrackClient.searchTrack(spotifyUser.getAccessToken(), track);
   }
 
-  @PutMapping("/play")
-  public ArrayList<JSONObject> playNextTrack() {
-    String trackString = queue.getNextTrack();
-    return playTrackClient.play(spotifyUser.getAccessToken(), trackString, spotifyUser.getDeviceId(), queue);
-  }
-
   @MessageMapping("/sendmessage")
     @SendTo("/topic/messages")
     public MessageBean send(@Payload MessageBean message) {
@@ -105,6 +98,16 @@ public class SpotifyContoller {
   @MessageMapping("/getnexttrack")
     @SendTo("/topic/nexttrack")
     public JSONObject getNextTrack() {
+      // if (queue.getTrack().isEmpty()) {
+      //   System.out.println()
+      // } 
       return queue.getTrack();
     }
+
+  @MessageMapping("/play")
+    @SendTo("/topic/play")
+    public ArrayList<JSONObject> playNextTrack() {
+    String trackString = queue.getNextTrack();
+    return playTrackClient.play(spotifyUser.getAccessToken(), trackString, spotifyUser.getDeviceId(), queue);
+  }
 }
