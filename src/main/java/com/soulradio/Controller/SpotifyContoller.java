@@ -71,22 +71,10 @@ public class SpotifyContoller {
     return playTrackClient.searchTrack(spotifyUser.getAccessToken(), track);
   }
 
-  // @PutMapping("/queuetrack")
-  // public ArrayList<JSONObject> queueTrack(@RequestParam String device_id, @RequestBody String Track){
-  //   spotifyUser.setDeviceID(device_id);
-  //   System.out.println(Track);
-  //   return playTrackClient.queueTrack(spotifyUser.getAccessToken(), Track, device_id, queue);
-  // }
-
   @PutMapping("/play")
   public ArrayList<JSONObject> playNextTrack() {
     String trackString = queue.getNextTrack();
     return playTrackClient.play(spotifyUser.getAccessToken(), trackString, spotifyUser.getDeviceId(), queue);
-  }
-
-  @GetMapping("/getnexttrack")
-  public JSONObject getNextTrack() {
-    return queue.getTrack();
   }
 
   @MessageMapping("/sendmessage")
@@ -112,5 +100,11 @@ public class SpotifyContoller {
       String key = vote.equals("up") ? "votesUp" : "votesDown";
 
       return queue.updateQueuedTracks(number, vote, key);
+    }
+  
+  @MessageMapping("/getnexttrack")
+    @SendTo("/topic/nexttrack")
+    public JSONObject getNextTrack() {
+      return queue.getTrack();
     }
 }

@@ -76,8 +76,6 @@ public class PlayTrackClient {
         System.out.println("Error: " + e.getMessage());
       }
 
-      System.out.println(queue.getSize());
-
       return queue.getQueuedTracks();
   };
 
