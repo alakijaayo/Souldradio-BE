@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.soulradio.Classes.MessageBean;
 import com.soulradio.Classes.SpotifyUser.Queue;
 import com.soulradio.Classes.SpotifyUser.SpotifyUser;
+import com.soulradio.Classes.SpotifyUser.Users;
 import com.soulradio.Client.PlayTrackClient;
 import com.soulradio.Client.SpotifyClient;
 
@@ -37,10 +37,10 @@ public class SpotifyContoller {
   PlayTrackClient playTrackClient;
 
   @Autowired
-  SimpMessagingTemplate template;
+  Queue queue;
 
   @Autowired
-  Queue queue;
+  Users users;
   
   @GetMapping("/login")
   public RedirectView login() {
@@ -115,4 +115,27 @@ public class SpotifyContoller {
 
       return queue.getSize() == 0 ? queue.getQueuedTracks() : playTrackClient.play(spotifyUser.getAccessToken(), trackString, spotifyUser.getDeviceId(), queue);
     }
+  
+  @MessageMapping("/loggedin")
+    @SendTo("/topic/loggedin")
+    public JSONObject loggedIn() {
+      users.addUser();
+      JSONObject newLogin = new JSONObject();
+      newLogin.put("message", spotifyUser.getUser().getDisplayName() + " has logged in!");
+      newLogin.put("number", users.getUserCount());
+
+      return newLogin;
+    }
+
+  @MessageMapping("/loggedin")
+    @SendTo("/topic/loggedin")
+    public JSONObject loggedOut() {
+      users.removeUser();
+      JSONObject onLogout = new JSONObject();
+      onLogout.put("message", spotifyUser.getUser().getDisplayName() + " has logged out!");
+
+      return onLogout;
+    }
+
+
 }

@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.apache.hc.core5.http.ParseException;
-// import java.util.Base64;
-
 import org.springframework.stereotype.Component;
-
 import com.soulradio.Classes.SpotifyUser.SpotifyUser;
 
 import io.github.cdimascio.dotenv.Dotenv;
