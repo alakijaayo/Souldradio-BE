@@ -3,7 +3,8 @@ package com.soulradio.Classes.SpotifyUser;
 import java.util.ArrayList;
 
 import org.json.simple.JSONObject;
-
+import org.springframework.stereotype.Component;
+@Component
 public class Users {
   Integer userCount = 0;
   public ArrayList<JSONObject> users = new ArrayList<JSONObject>();
@@ -18,5 +19,9 @@ public class Users {
 
   public Integer getUserCount() {
     return userCount;
+  }
+
+  public void addNewUser(JSONObject user) {
+    users.add(user);
   }
 }

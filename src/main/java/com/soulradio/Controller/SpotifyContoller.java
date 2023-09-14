@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -118,8 +119,17 @@ public class SpotifyContoller {
   
   @MessageMapping("/loggedin")
     @SendTo("/topic/loggedin")
-    public JSONObject loggedIn() {
-      users.addUser();
+    public JSONObject loggedIn(@Payload String newUser) {
+      String username = queue.getStringValue(newUser, "name");
+      Boolean isEqual = username.equals(spotifyUser.getUser().getDisplayName());
+
+      if(users.getUserCount() == 0 || !isEqual) {
+        users.addUser();
+        JSONObject newUsername =  new JSONObject();
+        newUsername.put("name", username);
+        users.addNewUser(newUsername);
+      };
+
       JSONObject newLogin = new JSONObject();
       newLogin.put("message", spotifyUser.getUser().getDisplayName() + " has logged in!");
       newLogin.put("number", users.getUserCount());
@@ -127,8 +137,8 @@ public class SpotifyContoller {
       return newLogin;
     }
 
-  @MessageMapping("/loggedin")
-    @SendTo("/topic/loggedin")
+  @MessageMapping("/loggedout")
+    @SendTo("/topic/loggedout")
     public JSONObject loggedOut() {
       users.removeUser();
       JSONObject onLogout = new JSONObject();
@@ -136,6 +146,4 @@ public class SpotifyContoller {
 
       return onLogout;
     }
-
-
 }
