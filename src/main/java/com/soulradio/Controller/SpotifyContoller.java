@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -26,7 +25,7 @@ import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.User;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://api.soulradiovibe.com")
 @RestController
 public class SpotifyContoller {
   SpotifyUser spotifyUser = new SpotifyUser();
@@ -51,7 +50,7 @@ public class SpotifyContoller {
   @GetMapping("/callback")
   public RedirectView getCode(@RequestParam String code) {
     spotifyClient.setAuthorizationCode(code, spotifyUser);
-    return new RedirectView( "http://localhost:3000/home");
+    return new RedirectView( "https://api.soulradiovibe.com/home");
   }
 
   @GetMapping("/username")
@@ -131,9 +130,9 @@ public class SpotifyContoller {
       };
 
       JSONObject newLogin = new JSONObject();
-      newLogin.put("message", spotifyUser.getUser().getDisplayName() + " has logged in!");
       newLogin.put("number", users.getUserCount());
-
+      newLogin.put("users", users.getUsers());
+      
       return newLogin;
     }
 

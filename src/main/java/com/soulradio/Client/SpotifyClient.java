@@ -7,7 +7,7 @@ import org.apache.hc.core5.http.ParseException;
 import org.springframework.stereotype.Component;
 import com.soulradio.Classes.SpotifyUser.SpotifyUser;
 
-import io.github.cdimascio.dotenv.Dotenv;
+// import io.github.cdimascio.dotenv.Dotenv;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
@@ -19,12 +19,14 @@ import se.michaelthelin.spotify.requests.authorization.authorization_code.Author
 @Component
 public class SpotifyClient {
   String accessToken;
-  Dotenv dotenv = Dotenv.configure().load();
-  String clientID = dotenv.get("CLIENT_ID");
-  String secretID = dotenv.get("SECRET_ID");
+  // Dotenv dotenv = Dotenv.configure().load();
+  // String clientID = dotenv.get("CLIENT_ID");
+  // String secretID = dotenv.get("SECRET_ID");
+  String clientID = System.getenv("CLIENT_ID");
+  String secretID = System.getenv("SECRET_ID");
   Paging<Track> trackPaging;
 
-  private URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8080/callback");
+  private URI redirectUri = SpotifyHttpManager.makeUri("https://api.soulradiovibe.com/callback");
   
   private SpotifyApi spotifyAPI = new SpotifyApi.Builder()
     .setClientId(clientID)

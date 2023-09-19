@@ -24,4 +24,12 @@ public class Users {
   public void addNewUser(JSONObject user) {
     users.add(user);
   }
+
+  public void removeUser(JSONObject user) {
+    users.remove(user);
+  }
+
+  public ArrayList<JSONObject> getUsers() {
+    return users;
+  }
 }
